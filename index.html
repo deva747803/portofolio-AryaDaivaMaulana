@@ -157,7 +157,7 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
-                            <div class="stat-number" data-count="4">5</div>
+                            <div class="stat-number" data-count="5">5</div>
                             <div class="stat-label">Tahun Pengalaman</div>
                         </div>
                     </div>
@@ -1105,7 +1105,7 @@
                     <!-- Contact Form Card -->
                     <div class="contact-form-card card-glow">
                         <h3 class="contact-panel-title">Kirim Pesan</h3>
-                        <form id="contact-form">
+                        <form id="contact-form" onsubmit="return handleFormSubmit(event)">
                             <div class="form-group">
                                 <label for="name" class="form-label">Nama Lengkap</label>
                                 <input type="text" id="name" name="name" class="form-control"
@@ -1152,6 +1152,60 @@
 
     <!-- Custom Interaction Scripts -->
     <script src="script.js"></script>
+
+    <!-- Inline Form Handler -->
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Get button and status elements
+            const submitBtn = document.getElementById('form-submit-btn');
+            const formStatus = document.getElementById('form-status');
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Mempersiapkan Email... <i class="fa-solid fa-spinner fa-spin"></i>';
+            formStatus.innerHTML = '';
+            formStatus.className = 'form-status';
+            
+            // Target email
+            const emailTarget = 'aryadaiva069@gmail.com';
+            const emailSubject = `Pesan Portofolio dari ${name}`;
+            const emailBody = `Nama: ${name}\nEmail: ${email}\n\nPesan:\n${message}`;
+            const mailtoUrl = `mailto:${emailTarget}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            // Simulate loading then redirect to email
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                
+                // Open email client
+                window.location.href = mailtoUrl;
+                
+                formStatus.classList.add('success');
+                formStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Membuka aplikasi email Anda...';
+                
+                // Reset form after a moment
+                setTimeout(() => {
+                    document.getElementById('contact-form').reset();
+                    formStatus.style.transition = 'opacity 0.8s';
+                    formStatus.style.opacity = '0';
+                    setTimeout(() => {
+                        formStatus.innerHTML = '';
+                        formStatus.style.opacity = '1';
+                    }, 800);
+                }, 5000);
+            }, 1200);
+            
+            return false;
+        }
+    </script>
 </body>
 
 </html>
